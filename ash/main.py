@@ -1,34 +1,81 @@
+import plotly.figure_factory
 import streamlit
-import altair
+from hierarchical_clustering import example, iris_example
 
-from hierarchical_clustering import example
-from scipy.cluster import hierarchy
-import matplotlib.pyplot as plt
+import dash
+from dash.dependencies import Input, Output
+import dash_bio as dashbio
+from dash import html, dcc
 
 X, labels, Z, dendrogram = example()
 
+iris, iris_data, agglomerative_clustering, iris_dendrogram = iris_example()
+
+
+def plot_interactive(threshold):
+    return plotly.figure_factory.create_dendrogram(
+        iris_data,
+        orientation="right",
+        labels=agglomerative_clustering.labels_,
+        color_threshold=threshold,
+    )
+
+
+# def streamlit_demo():
+#     streamlit.header("Cluster Analysis")
+#
+#     color_threshold = streamlit.slider("Select color threshold.", 0, 15)
+#
+#     fig = plot_interactive(color_threshold)
+#     streamlit.plotly_chart(fig)
+
+
+def test_dash():
+    app = dash.Dash(__name__)
+
+    df = iris
+
+    columns = list(df.columns.values)
+    rows = list(df.index)
+
+    app.layout = html.Div(
+        [
+            "Rows to display",
+            dcc.Dropdown(
+                id="my-default-clustergram-input",
+                options=[{"label": row, "value": row} for row in list(df.index)],
+                value=rows[:10],
+                multi=True,
+            ),
+            html.Div(id="my-default-clustergram"),
+        ]
+    )
+
+    @app.callback(
+        Output("my-default-clustergram", "children"),
+        Input("my-default-clustergram-input", "value"),
+    )
+    def update_clustergram(rows):
+        if len(rows) < 2:
+            return "Please select at least two rows to display."
+
+        return dcc.Graph(
+            figure=dashbio.Clustergram(
+                data=df.loc[rows].values,
+                column_labels=columns,
+                row_labels=rows,
+                color_threshold={"row": 250, "col": 700},
+                hidden_labels="row",
+                height=800,
+                width=700,
+            )
+        )
+
 
 def main():
-    streamlit.header("Cluster Analysis")
-    # streamlit.write(dendrogram)
+    # streamlit_demo()
 
-    streamlit.slider("Select color threshold.", 0, 15)
-
-    plt.figure()
-
-    hierarchy.set_link_color_palette(["m", "c", "y", "k"])
-    fig, axes = plt.subplots(1, 2, figsize=(8, 3))
-    dn1 = hierarchy.dendrogram(
-        Z, ax=axes[0], above_threshold_color="y", orientation="top"
-    )
-    dn2 = hierarchy.dendrogram(
-        Z, ax=axes[1], above_threshold_color="#bcbddc", orientation="right"
-    )
-    hierarchy.set_link_color_palette(None)  # reset to default after use
-    plt.show()
-    streamlit.pyplot(fig)
-
-    altair_dendrogram = altair.Chart(dendrogram)
+    test_dash()
 
 
 if __name__ == "__main__":

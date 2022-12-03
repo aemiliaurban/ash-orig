@@ -1,12 +1,25 @@
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.cluster import AgglomerativeClustering
+import numpy as np
+import pandas as pd
 from scipy.cluster import hierarchy
+from sklearn import datasets
+from sklearn.cluster import AgglomerativeClustering
+
+
+def iris_example():
+    iris = datasets.load_iris(as_frame=True)
+    iris_df = pd.DataFrame(iris.data, columns=iris.feature_names)
+
+    dendrogram = hierarchy.dendrogram(hierarchy.linkage(iris.data, method="ward"))
+
+    model = AgglomerativeClustering(n_clusters=5, affinity="euclidean", linkage="ward")
+    result = model.fit(iris.data)
+
+    return iris_df, iris.data, result, dendrogram
 
 
 def example():
-    dataset = pd.read_csv("D:\Study\diplomka2\\ash\\ash\Mall_Customers.csv")
+    dataset = pd.read_csv("/Users/niki/diplomka/ash/ash/Mall_Customers.csv")
 
     X = dataset.iloc[:, [3, 4]].values
     Z = hierarchy.linkage(X, "single")
