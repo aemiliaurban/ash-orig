@@ -23,6 +23,7 @@ def example():
 
     X = dataset.iloc[:, [3, 4]].values
     Z = hierarchy.linkage(X, "single")
+    print(Z)
 
     dendrogram = hierarchy.dendrogram(hierarchy.linkage(X, method="ward"))
 
@@ -38,3 +39,6 @@ def example():
     # plt.show()
 
     return X, labels, Z, dendrogram
+
+
+example()

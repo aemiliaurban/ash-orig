@@ -2,7 +2,7 @@ import altair
 import matplotlib.pyplot as plt
 import networkx as nx
 import plotly.figure_factory
-import streamlit
+import streamlit_app
 from hierarchical_clustering import example, iris_example
 from scipy.cluster import hierarchy
 from sklearn import datasets
@@ -56,6 +56,12 @@ def main():
 
     # streamlit.altair_chart(altair_dendrogram)
 
+
+#
+# options = ["euclidean", "minkowski", "cityblock", "seuclidean", "sqeuclidean",
+#            "cosine", "correlation", "hamming", "jaccard", "jensenshannon", "chebyshev", "canberra",
+#            "braycurtis", "mahalanobis", "yule", "matching", "dice", "kulczynski1", "rogerstanimoto",
+#            "russellrao", "sokalmichener", "sokalsneath"],
 
 if __name__ == "__main__":
     main()

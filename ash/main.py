@@ -1,11 +1,10 @@
-import plotly.figure_factory
-import streamlit
-from hierarchical_clustering import example, iris_example
-
 import dash
-from dash.dependencies import Input, Output
 import dash_bio as dashbio
-from dash import html, dcc
+import plotly.figure_factory
+import streamlit_app
+from dash import dcc, html
+from dash.dependencies import Input, Output
+from hierarchical_clustering import example, iris_example
 
 X, labels, Z, dendrogram = example()
 
