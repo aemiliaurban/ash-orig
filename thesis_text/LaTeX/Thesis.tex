@@ -1,0 +1,164 @@
+        %% --------------------------------------------------------------------
+%% thesis.tex -- MAIN FILE (the one that you compile with LaTeX)
+%% --------------------------------------------------------------------
+%% version 1.8.09.02.16 (beta)
+
+%-----<<<<<<<<<<<< START >>>>>>>>>>>>-----
+\documentclass [a4paper,12pt]{report}               		
+%\usepackage[cp1250]{inputenc}%for 
+
+%Czechoslovak characters
+%-----<<< --------------------------------- >>>-----
+%\usepackage[czech]{babel}
+%-----<<<<<<<<<<<< DEFINITIONS >>>>>>>>>>>>-----
+\def \BookName {MASTER'S THESIS}
+\def \Bookname {Interactive clustering approaches in single-cell cytometry}
+\def \AutorDP {Bc. et Bc.\ Nicole Aemilia Urban}														%use Czech and Slovak characters freely
+\def \AuthorDP {Nicole Aemilia Urban} 													%use just English characters
+\def \Email {urban.nicole.d@gmail.com}
+\def \Year {2022}
+\def \Place {Prague}
+\def \Subject {}
+\def \Keywords {interactive data analysis, visualization, cluster analysis, exploratory analysis, high-dimensional data}
+\def \Klic {interaktivní analýza dat, vizualizace, shluková analýza, explorační analýza, vysoko-dimenzionální data} 					%keywords in Czech
+\def \JEL {
+ \href{http://ideas.repec.org/j/C38.html}{C38},
+ \href{http://ideas.repec.org/j/H45.html}{C45}, 	
+ \href{http://ideas.repec.org/j/C63.html}{C63}
+ }	
+\def \Thesisweb {\href{}}		%thesis webpage (leave empty if you use none)
+\def \AcademicYear {2022/2023}
+\def \Supervisor {Mgr. Adam Šmelko}
+\def \EmailSup {smelko@d3s.mff.cuni.cz}
+\def \CUNI {Charles University}
+\def \FSS {Faculty of Science}
+\def \IES {Bioinformatics}
+%-----<<< --------------------------------- >>>-----
+
+%-----<<<<<<<<<<<< STYLES >>>>>>>>>>>>-----      														
+\usepackage{Styles/Head}
+\usepackage{Styles/Mystyle}
+\usepackage{amsmath}
+\usepackage{booktabs}
+\usepackage{graphicx} %package to manage images
+\graphicspath{ {Figures/} }
+\usepackage{footnote}
+\makesavenoteenv{tabular}
+\usepackage{tablefootnote}
+
+\usepackage{listings}
+
+
+
+
+\theoremstyle{plain}
+\newtheorem*{ax1*}{Axiom 1}
+\newtheorem*{ax2*}{Axiom 2}
+\newtheorem{theorem}{Theorem}
+
+%\usepackage[czech]{babel}
+
+
+%-----<<< --------------------------------- >>>-----
+
+%-----<<<<<<<<<<<< DOCUMENT >>>>>>>>>>>>-----
+\begin{document}
+\frontmatter                   									%lowercase roman pagination for front matter
+\clubpenalty 9999 															%not so many orphants
+\widowpenalty 9999 															%not so many widows
+
+%-----<<< HEAD >>>-----
+\pagestyle{empty}                       				%no visible pagination here                    
+\BookHead
+%-----<<< ---- >>>-----
+
+%-----<<< DECLARATION >>>-----
+\input{01_Frontmatter/decl.tex}        					%input file
+\clearpage
+%-----<<< ----------- >>>-----
+
+%-----<<< ACKNOWLEDGMENTS >>>-----
+\input{01_Frontmatter/ackn.tex}      						%input file
+\clearpage
+%-----<<< --------------- >>>-----
+
+%-----<<< ABSTRACT >>>-----
+\phantomsection													 				%bookmark anchor
+\pdfbookmark[0]{Abstract}{abst}        	 				%add bookmark
+\input{01_Frontmatter/abst.tex}       					%input file
+\clearpage
+%-----<<< -------- >>>-----
+
+%-----<<< TABLE OF CONTENTS >>>-----
+\pagestyle{fancy} 											 				%headers style
+\fancyhead[LO]{\sffamily Contents}			 				%headers in sans serif and not in uppercase
+\phantomsection													 				%bookmark anchor
+\pdfbookmark[0]{Contents}{toc}        	 				%add bookmark
+\tableofcontents
+\label{toc}
+\clearpage
+%-----<<< ----------------- >>>-----
+
+%-----<<< LIST OF TABLES >>>-----
+\fancyhead[LO]{\sffamily List of Tables}				%headers in sans serif and not in uppercase
+\phantomsection																	%bookmark anchor
+\addcontentsline{toc}{chapter}{List of Tables}	%add LofT to the Table of Contents
+\listoftables
+\clearpage
+%-----<<< --------------- >>>-----
+
+%-----<<< LIST OF FIGURES >>>-----  
+\fancyhead[LO]{\sffamily List of Figures}
+\phantomsection																	%bookmark anchor
+\addcontentsline{toc}{chapter}{List of Figures}	%add LofF to the Table of Contents
+\listoffigures
+\clearpage
+%-----<<< ---------------- >>>-----
+
+%-----<<< ACRONYMS >>>-----   
+\fancyhead[LO]{\sffamily Acronyms}
+\phantomsection																	%bookmark anchor
+\addcontentsline{toc}{chapter}{Acronyms}				%add Acronyms to the Table of Contents
+\input{01_Frontmatter/acro.tex}									%List of Acronyms
+\clearpage
+%-----<<< ---------------- >>>-----
+
+%-----<<< THESIS PROPOSAL >>>----- 
+\fancyhead[LO]{\sffamily Master's Thesis Proposal}
+\phantomsection																	%bookmark anchor
+\addcontentsline{toc}{chapter}{Thesis Proposal}	%add Proposal to the Table of Contents
+\input{01_Frontmatter/prop.tex}									%Thesis proposal
+\clearpage
+%-----<<< ---------------- >>>-----
+
+%-----<<< MAIN MATTER >>>-----
+\mainmatter                   									%start arabic pagination from 1
+\autohdr																				%automatic headers for main matter
+\input{02_Mainmatter/01.tex}              %input field
+\input{02_Mainmatter/02.tex}
+\input{02_Mainmatter/03.tex}
+\input{02_Mainmatter/04.tex}
+\input{02_Mainmatter/05.tex}
+\input{02_Mainmatter/07.tex}
+\input{02_Mainmatter/08.tex}
+\clearpage
+%-----<<< -------- >>>-----
+
+%-----<<< REFERENCES >>>-----
+\fancyhead[LO]{\sffamily Bibliography}					%headers in sans serif and not in uppercase
+\bibliographystyle{Styles/Stylebib}							%style of literature, you can use e.g. newapa	instead of Styles/Stylebib
+\bibliography{Styles/Bibliography}							%bibliography database
+\addcontentsline{toc}{chapter}{Bibliography} 		%Add bibliography to the table of contents
+\clearpage
+%-----<<< ---------- >>>-----
+
+%-----<<< APPENDIXES >>>-----
+\backmatter																			%uppercase roman pagination for back matter; appendices start
+\autohdr																				%automatic headers     				
+\input{03_Backmatter/01_App.tex}           			%input file
+\input{03_Backmatter/02_App.tex}           			%input file
+\clearpage
+%-----<<< --------- >>>-----
+
+\end{document}
+%-----<<<<<<<<< END OF DOCUMENT >>>>>>>>>-----
