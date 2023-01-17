@@ -266,7 +266,7 @@ class _Dendrogram_Modified(object):
                 appear on the plot
             (e) P['leaves']: left-to-right traversal of the leaves
 
-        # """
+        #"""
         P = sch.dendrogram(Z, color_threshold=color_threshold, labels=self.labels)
 
         icoord = scp.array(P["icoord"])
