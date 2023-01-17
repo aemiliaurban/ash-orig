@@ -1,0 +1,62 @@
+\chapter{Clustering}
+\label{chap:clustering}
+Clustering is a method of finding structural patterns in given data and sorting the data points into groups or subsets. In general, data points in one cluster are more similar to each other than to data points in other clusters. Clustering can be done in either supervised, semisupervised, or unsupervised fashion. 
+
+Cluster analysis is a collection of various algorithms and methods that can be used in said grouping process, with each being appropriate for different jobs. The basis of each model is different as well, using various measures such as distance \citep{murtagh2017algorithms, hsu2007hierarchical}. The basic overview can be split into connectivity models \citep{fischer2003clustering}, centroid models \citep{morissette2013k, sun2014parallel}, distribution models \citep{jimenez2019extensions, bocchieri2001subspace}, density models \citep{campello2020density}, and other. This thesis focuses mainly on hierarchical clustering, which falls under connectivity models and uses distance as its metric of choice. 
+
+\section{Hierarchical clustering}
+\label{sec:hierarchicalclustering}
+Hierarchical clustering is one of the possible approaches to classification problems. It is a tool that gives an idea of the data structure, and allows for association between subclusters while also keeping a level of distinction. Hierarchical clustering can be done in two ways: bottom up, also known as agglomerative, in which the displayed distance is of two clusters, and top down, also known as divisive, in which the distance displayed is between individual observations. Only the agglomerative approach will be discussed in this thesis. 
+
+In the agglomerative approach, two closest elements are conjoined into a cluster, which is then joined into a larger cluster with the closest element. In this iterative way, a singular final cluster is made and a hierarchical overview of the data is formed. In this way, an agglomerative hierarchical algorithm displays the similarity between clusters and only check distances between data points.
+
+\section{Distance}
+\label{sec:distance}
+Distance can never be a negative number, and scales from 0 for objects that are not different at all, to larger values for more different objects. The default distance metric is usually Euclidean, although in flow cytometry context, the usage of Mahalanobis distance instead could be a better idea \cite{fivser2012detection}.
+
+Euclidean distance is a distance metric used between two points in spaces of higher dimension than 2. It can be found by using the Pythagorean theorem and solving for hypotenuse. 
+
+
+ \[ x^2 + y^2= z^2 \]
+ ADD d(p, q) = root((p1-q1)\^2 + (pn-qn)\^2))
+
+ It can also be found using polar coordinates:
+
+ ADD d(p,q) = root(r\^2 + s\^2 - 2rs cos(theta-phi)) 
+
+Mahalanobis distance is useful for keeping both orientation and axes ratios while serving as an expansion factor for the best fitted ellipsoid, allowing for more efficient processing of elongated clusters \cite{zamir2005resolving}. It is a distance metric distances used for distance between a point P and distribution D. 
+
+It follows this algorithm:
+
+1. find centroid/center of mass
+
+2. Estimate standard deviation of distances between points and center of mass
+
+3. If distance(test point, center point) < 1 stdev -> point belongs to the set with a high pobability
+
+4. Plug the above, which can also be written as 
+\[(test_point - sample_mean)/standard_deviation\]
+
+
+\section{Data Visualization}
+\label{sec:dataviz}
+As data visualization is crucial for human friendly work and allows for simpler interpretation of the results, various tools and approaches have been developed. Visualization is one of the core parts of data science. It allows not only for the data scientist to understand the data and the oucome of their work better, but also to share it with the shareholders or the public in a clear way.
+
+The cluster structure can be graphically represented in a dendrogram, which by its nature consists of n - 1 pairs of branches over n observations, each branch representing one split. The distance between sub-clusters is given by the height of the branches. 
+
+However, it is not enough to have the dendrogram generated. The user might also want to be able to interact with the results, zooming in and out of parts, choosing various colors for different clusters, or selecting only parts of the final dendrogram. Tools for dendrogram visualization and inspection have been made as described in \cite{sieger2017interactive}.
+
+Dendrograms are often paired with heat maps, another data visualization tool in which values are represented in a matrix of values, that are later translated into colors. Color can also be assigned to each cell population, distinguishing them by their markers \cite{ellyard2019non}. Advanced heatmap tools have also been implemented in R \citep{zhao2014advanced}. Patterns of large datasets can be displayed via heatmaps without the need to analyse the data first \citep{key2012tutorial}.
+
+
+
+
+
+
+
+
+
+
+
+
+
