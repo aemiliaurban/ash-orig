@@ -267,23 +267,13 @@ class _Dendrogram_Modified(object):
             (e) P['leaves']: left-to-right traversal of the leaves
 
         # """
-        # P = sch.dendrogram(
-        #     Z,
-        #     orientation=self.orientation,
-        #     labels=self.labels,
-        #     no_plot=True,
-        #     color_threshold=color_threshold,
-        # )
-        print(Z)
-        print(color_threshold)
-        P = sch.dendrogram(Z, color_threshold=color_threshold)
+        P = sch.dendrogram(Z, color_threshold=color_threshold, labels=self.labels)
 
         icoord = scp.array(P["icoord"])
         dcoord = scp.array(P["dcoord"])
         ordered_labels = scp.array(P["ivl"])
         color_list = scp.array(P["color_list"])
         colors = self.get_color_dict(colorscale)
-        print(colors)
 
         trace_list = []
 

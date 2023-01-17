@@ -1,4 +1,8 @@
-INPUT_DATA = {
+import os
+
+import pandas as pd
+
+INPUT_DATA_DENDROGRAM = {
     "merge_matrix": [
         [-1, -8],
         [-3, -5],
@@ -35,3 +39,8 @@ INPUT_DATA = {
         "Georgia",
     ],
 }
+
+us_arrests = pd.read_csv(f"{os.getcwd()}/USArrest.csv")
+us_arrests = us_arrests.head(10)
+STATES = us_arrests['Unnamed: 0']
+US_ARRESTS = us_arrests.drop(['Unnamed: 0'],axis=1)
