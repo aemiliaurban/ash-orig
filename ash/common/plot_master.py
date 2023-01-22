@@ -101,10 +101,8 @@ class PlotMaster:
 
     def plot_custom_dendrogram(self, input_data, color_threshold):
         with patch(
-                "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
-                new=create_dendrogram_modified,
+            "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
+            new=create_dendrogram_modified,
         ) as create_dendrogram:
-            fig = self.plot_interactive(
-                create_dendrogram, input_data, color_threshold
-            )
+            fig = self.plot_interactive(create_dendrogram, input_data, color_threshold)
             return fig

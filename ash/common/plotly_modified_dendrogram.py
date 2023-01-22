@@ -28,10 +28,6 @@ def create_dendrogram_modified(
                             scipy.spatial and scipy.hierarchy"
         )
 
-    # s = Z.shape
-    # if len(s) != 2:
-    #     exceptions.PlotlyError("X should be 2-dimensional array.")
-
     dendrogram = _Dendrogram_Modified(
         Z,
         orientation,
