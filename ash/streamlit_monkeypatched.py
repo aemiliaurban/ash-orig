@@ -41,7 +41,6 @@ def plot_input_data_reduced(plot_input_data: list[str]):
 r = RDataParser(INPUT_DATA_DENDROGRAM)
 r.convert_merge_matrix()
 r.add_joining_height()
-dendrogram(r.merge_matrix)
 
 streamlit.header("Cluster Analysis")
 
