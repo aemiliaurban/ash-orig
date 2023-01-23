@@ -7,7 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from umap import UMAP
 
-from ash.common.plotly_modified_dendrogram import create_dendrogram_modified
+from .plotly_modified_dendrogram import create_dendrogram_modified
 
 
 class PlotMaster:
