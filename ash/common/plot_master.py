@@ -1,5 +1,3 @@
-from unittest.mock import patch
-
 import pandas as pd
 import plotly.express as px
 import streamlit
@@ -7,8 +5,6 @@ from plotly.graph_objs import graph_objs
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from umap import UMAP
-
-from .plotly_modified_dendrogram import create_dendrogram_modified
 
 
 class PlotMaster:
@@ -137,10 +133,14 @@ class PlotMaster:
             )
             return fig
 
-    def plot_custom_dendrogram(self, input_data, color_threshold):
-        with patch(
-            "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
-            new=create_dendrogram_modified,
-        ) as create_dendrogram:
-            fig = self.plot_interactive(create_dendrogram, input_data, color_threshold)
-            return fig
+    def plot_selected_features(self, desired_columns):
+        to_plot = self.input_data[desired_columns]
+        fig = px.scatter(
+            to_plot,
+            x=to_plot.columns[0],
+            y=to_plot.columns[1],
+            color=self.color_map,
+            hover_name=self.labels,
+            labels={"color": "states"},
+        )
+        return fig

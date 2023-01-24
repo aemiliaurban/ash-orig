@@ -17,9 +17,7 @@ r.convert_merge_matrix()
 r.add_joining_height()
 
 
-def plot_input_data_reduced(plot_input_data: str):
-    # if "Select two features" in plot_input_data:
-    #     return plot_master.plot_selected_features_streamlit()
+def plot_input_data_reduced(plot_input_data: str, plot_master: PlotMaster):
     if plot_input_data == "All dimensions":
         return plot_master.plot_all_dimensions()
     elif plot_input_data == "PCA":
@@ -50,10 +48,8 @@ app.layout = html.Div(
         ),
         dcc.Dropdown(list(US_ARRESTS.columns), multi=True, id="dropdown-heatmap-plot"),
         dcc.Graph(id="dendrogram-graph", figure=go.Figure()),
-        dcc.Graph(id="heatmap-graph", figure=go.Figure()),
         dcc.Dropdown(
             [
-                "Select two features",
                 "All dimensions",
                 "PCA",
                 "PCA_3D",
@@ -65,13 +61,19 @@ app.layout = html.Div(
             id="plot_dropdown",
             value=["PCA"],
         ),
+        dcc.Dropdown(
+            list(US_ARRESTS.columns), multi=True, id="dropdown-selected-features-plot"
+        ),
+        dcc.Graph(id="two-features", figure=go.Figure()),
+        dcc.Graph(id="heatmap-graph", figure=go.Figure()),
         dcc.Graph(id="reduced-graph", figure=go.Figure()),
+        dcc.Store(id="dendrogram_memory"),
     ]
 )
 
 
 @app.callback(
-    Output("dendrogram-graph", "figure"),
+    Output("dendrogram_memory", "data"),
     Input("color-threshold-slider", "value"),
 )
 def create_dendrogram(value):
@@ -82,22 +84,33 @@ def create_dendrogram(value):
         custom_dendrogram = create_dendrogram(
             r.merge_matrix, color_threshold=value, labels=r.labels
         )
-        custom_dendrogram_color_map = custom_dendrogram.leaves_color_map_translated
-        fig = graph_objs.Figure(
-            data=custom_dendrogram.data, layout=custom_dendrogram.layout
-        )
-        global plot_master
-        plot_master = PlotMaster(
-            US_ARRESTS, custom_dendrogram.labels, r.order, custom_dendrogram_color_map
-        )
+        to_return = {
+            "leaves_color_map_translated": custom_dendrogram.leaves_color_map_translated,
+            "labels": custom_dendrogram.labels,
+            "data": custom_dendrogram.data,
+            "layout": custom_dendrogram.layout,
+        }
+        return to_return
+
+
+@app.callback(
+    Output("dendrogram-graph", "figure"),
+    Input("dendrogram_memory", "data"),
+)
+def plot_dendrogram(data):
+    fig = graph_objs.Figure(data=data["data"], layout=data["layout"])
     return fig
 
 
 @app.callback(
     Output("heatmap-graph", "figure"),
     Input("dropdown-heatmap-plot", "value"),
+    Input("dendrogram_memory", "data"),
 )
-def plot_heatmap(value):
+def plot_heatmap(value, data):
+    plot_master = PlotMaster(
+        US_ARRESTS, data["labels"], r.order, data["leaves_color_map_translated"]
+    )
     if type(value) != list or len(value) != 2:
         fig_heatmap = go.Figure(
             data=go.Heatmap(
@@ -112,11 +125,33 @@ def plot_heatmap(value):
 
 
 @app.callback(
+    Output("two-features", "figure"),
+    Input("dropdown-selected-features-plot", "value"),
+    Input("dendrogram_memory", "data"),
+)
+def plot_two_selected_features(value, data):
+    plot_master = PlotMaster(
+        US_ARRESTS, data["labels"], r.order, data["leaves_color_map_translated"]
+    )
+    if type(value) != list or len(value) != 2:
+        feature_plot = go.Figure(
+            plot_master.plot_selected_features(US_ARRESTS.columns[0:2])
+        )
+    else:
+        feature_plot = go.Figure(plot_master.plot_selected_features(value))
+    return feature_plot
+
+
+@app.callback(
     Output("reduced-graph", "figure"),
     Input("plot_dropdown", "value"),
+    Input("dendrogram_memory", "data"),
 )
-def plot_data_reduced(value):
-    return plot_input_data_reduced(value)
+def plot_data_reduced(value, data):
+    plot_master = PlotMaster(
+        US_ARRESTS, data["labels"], r.order, data["leaves_color_map_translated"]
+    )
+    return plot_input_data_reduced(value, plot_master)
 
 
 if __name__ == "__main__":
