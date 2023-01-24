@@ -41,7 +41,7 @@ INPUT_DATA_DENDROGRAM = {
     ],
 }
 
-us_arrests = pd.read_csv(f"/Users/niki/diplomka/ash/ash/user_data/USArrests.csv")
+us_arrests = pd.read_csv(os.path.join(os.getcwd(), "common", "user_data", "USArrests.csv"))
 us_arrests = us_arrests.head(10)
 STATES = us_arrests["Unnamed: 0"]
 US_ARRESTS = us_arrests.drop(["Unnamed: 0"], axis=1)

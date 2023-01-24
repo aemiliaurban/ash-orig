@@ -1,8 +1,209 @@
 from __future__ import absolute_import
 
+import math
+from unittest.mock import patch
+
+
+class RDataParser:
+    def __init__(self, input_data):
+        self.merge_matrix = [map(float, x) for x in input_data["merge_matrix"]]
+        self.joining_height = [float(x) for x in input_data["joining_height"]]
+        self.order = [float(x) for x in input_data["order"]]
+        self.labels = input_data["labels"]
+        self.max_tree_height: int = math.ceil(max(self.joining_height))
+        self.height_marks: dict = self.create_height_marks()
+
+    def convert_merge_matrix(self):
+        transformed_matrix = []
+        for node in self.merge_matrix:
+            new_node = []
+            for el in node:
+                if el < 0:
+                    transformed_el = abs(el) - 1
+                else:
+                    transformed_el = el + len(self.merge_matrix)
+                new_node.append(transformed_el)
+            transformed_matrix.append(new_node)
+
+        self.merge_matrix = transformed_matrix
+
+    def add_joining_height(self):
+        # TODO: error for len merge matrix != len joining height
+        for index in range(len(self.merge_matrix)):
+            self.merge_matrix[index].append(self.joining_height[index])
+            self.merge_matrix[index].append(self.order[index])
+
+    def create_height_marks(self) -> dict[int | float, str]:
+        height_marks = {}
+        for step in range(len(self.joining_height)):
+            height_marks[self.joining_height[step]] = f"Formed cluster {str(step+1)}"
+        return height_marks
+
+
+import os
+
+import pandas as pd
+
+INPUT_DATA_DENDROGRAM = {
+    "merge_matrix": [
+        [-1, -8],
+        [-3, -5],
+        [-6, -10],
+        [-4, 3],
+        [1, 4],
+        [-2, 2],
+        [-9, 6],
+        [5, 7],
+        [-7, 8],
+    ],
+    "joining_height": [
+        282.45,
+        537.97,
+        629.66,
+        844.635,
+        1347.43916666667,
+        1968.0425,
+        3422.88555555556,
+        6094.602725,
+        19984.8865432099,
+    ],
+    "order": [6, 0, 7, 3, 5, 9, 8, 1, 2, 4],
+    #    "order": [7, 1, 8, 4, 6, 1, 0, 9, 2, 3, 5],
+    "labels": [
+        "Alabama",  # 0
+        "Alaska",  # 1
+        "Arizona",  # 2
+        "Arkansas",  # 3
+        "California",  # 4
+        "Colorado",  # 5
+        "Connecticut",  # 6
+        "Delaware",  # 7
+        "Florida",  # 8
+        "Georgia",  # 9
+    ],
+}
+
+us_arrests = pd.read_csv(f"/Users/niki/diplomka/ash/ash/user_data/USArrests.csv")
+us_arrests = us_arrests.head(10)
+STATES = us_arrests["Unnamed: 0"]
+US_ARRESTS = us_arrests.drop(["Unnamed: 0"], axis=1)
+
+from unittest.mock import patch
+
+import pandas as pd
+import plotly.express as px
+import streamlit
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from umap import UMAP
+
+from .plotly_modified_dendrogram import create_dendrogram_modified
+
+
+class PlotMaster:
+    def __init__(self, input_data, labels: list[str], order: list[int | float]):
+        self.input_data = input_data
+        self.labels = labels
+        self.order = order
+
+    def plot_interactive(self, func, data, threshold):
+        return func(data, color_threshold=threshold, labels=self.labels)
+
+    def order_labels(self):
+        ordered_labels = []
+        for index in self.order:
+            ordered_labels.append(self.labels[int(index)])
+        return ordered_labels
+
+    def df_to_plotly(
+        self,
+        df: pd.DataFrame,
+        desired_columns: list,
+    ):
+        df = df.reindex(self.order)
+        df = df[desired_columns].T
+        return {"z": df.values, "x": self.order_labels(), "y": df.index.tolist()}
+
+    def plot_pca(self):
+        pca = PCA(2).fit_transform(self.input_data)
+        fig = px.scatter(pca, x=0, y=1, color=self.labels)
+        return fig
+
+    def plot_pca_3d(self):
+        pca = PCA(3).fit_transform(self.input_data)
+        fig = px.scatter_3d(pca, x=0, y=1, z=2, color=self.labels)
+        return fig
+
+    def plot_all_dimensions(self):
+        features = self.input_data.columns
+        fig = px.scatter_matrix(self.input_data, dimensions=features, color=self.labels)
+        fig.update_traces(diagonal_visible=True)
+        return fig
+
+    def plot_tsne(self):
+        tsne = TSNE(n_components=2, random_state=0, perplexity=5).fit_transform(
+            self.input_data
+        )
+        fig = px.scatter(tsne, x=0, y=1, color=self.labels, labels={"color": "states"})
+        return fig
+
+    def plot_tsne_3D(self):
+        tsne = TSNE(n_components=3, random_state=0, perplexity=5).fit_transform(
+            self.input_data
+        )
+        fig = px.scatter_3d(
+            tsne, x=0, y=1, z=2, color=self.labels, labels={"color": "states"}
+        )
+        return fig
+
+    def plot_umap(self):
+        umap = UMAP(n_components=2, init="random", random_state=0).fit_transform(
+            self.input_data
+        )
+        fig = px.scatter(umap, x=0, y=1, color=self.labels, labels={"color": "states"})
+        return fig
+
+    def plot_umap_3D(self):
+        umap = UMAP(n_components=3, init="random", random_state=0).fit_transform(
+            self.input_data
+        )
+        fig = px.scatter_3d(
+            umap, x=0, y=1, z=2, color=self.labels, labels={"color": "states"}
+        )
+        return fig
+
+    def plot_selected_features_streamlit(self):
+        desired_columns = streamlit.multiselect(
+            "Choose 2 features to plot.", self.input_data.columns
+        )
+        if len(desired_columns) != 2:
+            streamlit.write("Please choose 2 features to plot.")
+        else:
+            to_plot = self.input_data[desired_columns]
+            fig = px.scatter(
+                to_plot,
+                x="Murder",
+                y="Assault",
+                color=self.labels,
+                labels={"color": "states"},
+            )
+            return fig
+
+    def plot_custom_dendrogram(self, input_data, color_threshold):
+        with patch(
+            "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
+            new=create_dendrogram_modified,
+        ) as create_dendrogram:
+            fig = self.plot_interactive(create_dendrogram, input_data, color_threshold)
+            return fig
+
+
+# -*- coding: utf-8 -*-
+
 from collections import OrderedDict
 
 from plotly import optional_imports
+from plotly.graph_objs import graph_objs
 
 # Optional imports, may be None for users that only use our core functionality.
 np = optional_imports.get_module("numpy")
@@ -24,6 +225,7 @@ def create_dendrogram_modified(
             "FigureFactory.create_dendrogram requires scipy, \
                             scipy.spatial and scipy.hierarchy"
         )
+
     dendrogram = _Dendrogram_Modified(
         Z,
         orientation,
@@ -33,7 +235,7 @@ def create_dendrogram_modified(
         color_threshold=color_threshold,
     )
 
-    return dendrogram
+    return graph_objs.Figure(data=dendrogram.data, layout=dendrogram.layout)
 
 
 class _Dendrogram_Modified(object):
@@ -52,7 +254,7 @@ class _Dendrogram_Modified(object):
         hovertext=None,
         color_threshold=None,
     ):
-        self.orientation = "bottom"
+        self.orientation = orientation
         self.labels = labels
         self.xaxis = xaxis
         self.yaxis = yaxis
@@ -71,18 +273,12 @@ class _Dendrogram_Modified(object):
         else:
             self.sign[self.yaxis] = -1
 
-        (
-            dd_traces,
-            xvals,
-            yvals,
-            ordered_labels,
-            leaves,
-            leaves_color_map_translated,
-        ) = self.get_dendrogram_traces(X, colorscale, hovertext, color_threshold)
+        (dd_traces, xvals, yvals, ordered_labels, leaves) = self.get_dendrogram_traces(
+            X, colorscale, hovertext, color_threshold
+        )
 
         self.labels = ordered_labels
         self.leaves = leaves
-        self.leaves_color_map_translated = leaves_color_map_translated
         yvals_flat = yvals.flatten()
         xvals_flat = xvals.flatten()
 
@@ -161,7 +357,7 @@ class _Dendrogram_Modified(object):
         # named 'C0', 'C1', etc. To keep the colors consistent regardless of the
         # scipy version, we try as much as possible to map the new colors to the
         # old colors
-        # this mapping was found by inspecting scipy/cluster/hierarchy.py (see
+        # this mapping was found by inpecting scipy/cluster/hierarchy.py (see
         # comment above).
         new_old_color_map = [
             ("C0", "b"),
@@ -182,6 +378,8 @@ class _Dendrogram_Modified(object):
                 # it could happen that the old color isn't found (if a custom
                 # colorscale was specified), in this case we set it to an
                 # arbitrary default.
+                print("hello")
+                print(KeyError)
                 default_colors[n] = "rgb(0,116,217)"
 
         return default_colors
@@ -262,7 +460,7 @@ class _Dendrogram_Modified(object):
                 appear on the plot
             (e) P['leaves']: left-to-right traversal of the leaves
 
-        """
+        #"""
         P = sch.dendrogram(Z, color_threshold=color_threshold, labels=self.labels)
 
         icoord = scp.array(P["icoord"])
@@ -313,16 +511,28 @@ class _Dendrogram_Modified(object):
 
             trace_list.append(trace)
 
-        leaves_color_list_translated = {}
-        for i in range(len(P["leaves_color_list"])):
-            leaves_color_list_translated[ordered_labels[i]] = colors[
-                P["leaves_color_list"][i]
-            ]
-        return (
-            trace_list,
-            icoord,
-            dcoord,
-            ordered_labels,
-            P["leaves"],
-            leaves_color_list_translated,
-        )
+        return trace_list, icoord, dcoord, ordered_labels, P["leaves"]
+
+
+import json
+
+import js
+import matplotlib.pyplot as plt
+import pandas as pd
+import plotly
+import plotly.express as px
+
+r = RDataParser(INPUT_DATA_DENDROGRAM)
+r.convert_merge_matrix()
+r.add_joining_height()
+
+plot_master = PlotMaster(US_ARRESTS, r.labels, r.order)
+
+
+def create_dendrogram(value):
+    with patch(
+        "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
+        new=create_dendrogram_modified,
+    ) as create_dendrogram:
+        fig = plot_master.plot_interactive(create_dendrogram, r.merge_matrix, value)
+    return fig.to_json()
