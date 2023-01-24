@@ -8,14 +8,13 @@ from ash.common.data_parser import RDataParser
 from ash.common.input_data import INPUT_DATA_DENDROGRAM, US_ARRESTS
 from ash.common.plot_master import PlotMaster
 from ash.common.plotly_modified_dendrogram import create_dendrogram_modified
+from plotly.graph_objs import graph_objs
 
 matplotlib.pyplot.switch_backend("agg")
 
 r = RDataParser(INPUT_DATA_DENDROGRAM)
 r.convert_merge_matrix()
 r.add_joining_height()
-
-plot_master = PlotMaster(US_ARRESTS, r.labels, r.order)
 
 
 def plot_input_data_reduced(plot_input_data: str):
@@ -80,7 +79,17 @@ def create_dendrogram(value):
         "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
         new=create_dendrogram_modified,
     ) as create_dendrogram:
-        fig = plot_master.plot_interactive(create_dendrogram, r.merge_matrix, value)
+        custom_dendrogram = create_dendrogram(
+            r.merge_matrix, color_threshold=value, labels=r.labels
+        )
+        custom_dendrogram_color_map = custom_dendrogram.leaves_color_map_translated
+        fig = graph_objs.Figure(
+            data=custom_dendrogram.data, layout=custom_dendrogram.layout
+        )
+        global plot_master
+        plot_master = PlotMaster(
+            US_ARRESTS, custom_dendrogram.labels, r.order, custom_dendrogram_color_map
+        )
     return fig
 
 

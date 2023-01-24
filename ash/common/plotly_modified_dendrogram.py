@@ -1,11 +1,8 @@
-# -*- coding: utf-8 -*-
-
 from __future__ import absolute_import
 
 from collections import OrderedDict
 
 from plotly import optional_imports
-from plotly.graph_objs import graph_objs
 
 # Optional imports, may be None for users that only use our core functionality.
 np = optional_imports.get_module("numpy")
@@ -27,7 +24,6 @@ def create_dendrogram_modified(
             "FigureFactory.create_dendrogram requires scipy, \
                             scipy.spatial and scipy.hierarchy"
         )
-
     dendrogram = _Dendrogram_Modified(
         Z,
         orientation,
@@ -37,7 +33,7 @@ def create_dendrogram_modified(
         color_threshold=color_threshold,
     )
 
-    return graph_objs.Figure(data=dendrogram.data, layout=dendrogram.layout)
+    return dendrogram
 
 
 class _Dendrogram_Modified(object):
@@ -56,7 +52,7 @@ class _Dendrogram_Modified(object):
         hovertext=None,
         color_threshold=None,
     ):
-        self.orientation = orientation
+        self.orientation = "bottom"
         self.labels = labels
         self.xaxis = xaxis
         self.yaxis = yaxis
@@ -75,12 +71,18 @@ class _Dendrogram_Modified(object):
         else:
             self.sign[self.yaxis] = -1
 
-        (dd_traces, xvals, yvals, ordered_labels, leaves) = self.get_dendrogram_traces(
-            X, colorscale, hovertext, color_threshold
-        )
+        (
+            dd_traces,
+            xvals,
+            yvals,
+            ordered_labels,
+            leaves,
+            leaves_color_map_translated,
+        ) = self.get_dendrogram_traces(X, colorscale, hovertext, color_threshold)
 
         self.labels = ordered_labels
         self.leaves = leaves
+        self.leaves_color_map_translated = leaves_color_map_translated
         yvals_flat = yvals.flatten()
         xvals_flat = xvals.flatten()
 
@@ -159,7 +161,7 @@ class _Dendrogram_Modified(object):
         # named 'C0', 'C1', etc. To keep the colors consistent regardless of the
         # scipy version, we try as much as possible to map the new colors to the
         # old colors
-        # this mapping was found by inpecting scipy/cluster/hierarchy.py (see
+        # this mapping was found by inspecting scipy/cluster/hierarchy.py (see
         # comment above).
         new_old_color_map = [
             ("C0", "b"),
@@ -180,8 +182,6 @@ class _Dendrogram_Modified(object):
                 # it could happen that the old color isn't found (if a custom
                 # colorscale was specified), in this case we set it to an
                 # arbitrary default.
-                print("hello")
-                print(KeyError)
                 default_colors[n] = "rgb(0,116,217)"
 
         return default_colors
@@ -262,7 +262,7 @@ class _Dendrogram_Modified(object):
                 appear on the plot
             (e) P['leaves']: left-to-right traversal of the leaves
 
-        #"""
+        """
         P = sch.dendrogram(Z, color_threshold=color_threshold, labels=self.labels)
 
         icoord = scp.array(P["icoord"])
@@ -313,4 +313,16 @@ class _Dendrogram_Modified(object):
 
             trace_list.append(trace)
 
-        return trace_list, icoord, dcoord, ordered_labels, P["leaves"]
+        leaves_color_list_translated = {}
+        for i in range(len(P["leaves_color_list"])):
+            leaves_color_list_translated[ordered_labels[i]] = colors[
+                P["leaves_color_list"][i]
+            ]
+        return (
+            trace_list,
+            icoord,
+            dcoord,
+            ordered_labels,
+            P["leaves"],
+            leaves_color_list_translated,
+        )

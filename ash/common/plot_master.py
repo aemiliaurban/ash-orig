@@ -3,6 +3,7 @@ from unittest.mock import patch
 import pandas as pd
 import plotly.express as px
 import streamlit
+from plotly.graph_objs import graph_objs
 from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from umap import UMAP
@@ -11,13 +12,16 @@ from .plotly_modified_dendrogram import create_dendrogram_modified
 
 
 class PlotMaster:
-    def __init__(self, input_data, labels: list[str], order: list[int | float]):
+    def __init__(
+        self, input_data, labels: list[str], order: list[int | float], color_map: dict
+    ):
         self.input_data = input_data
         self.labels = labels
         self.order = order
+        self.color_map = color_map
 
-    def plot_interactive(self, func, data, threshold):
-        return func(data, color_threshold=threshold, labels=self.labels)
+    def plot_interactive(self, data, layout):
+        return graph_objs.Figure(data=data, layout=layout)
 
     def order_labels(self):
         ordered_labels = []
@@ -36,17 +40,24 @@ class PlotMaster:
 
     def plot_pca(self):
         pca = PCA(2).fit_transform(self.input_data)
-        fig = px.scatter(pca, x=0, y=1, color=self.labels)
+        fig = px.scatter(pca, x=0, y=1, color=self.color_map, hover_name=self.labels)
         return fig
 
     def plot_pca_3d(self):
         pca = PCA(3).fit_transform(self.input_data)
-        fig = px.scatter_3d(pca, x=0, y=1, z=2, color=self.labels)
+        fig = px.scatter_3d(
+            pca, x=0, y=1, z=2, color=self.color_map, hover_name=self.labels
+        )
         return fig
 
     def plot_all_dimensions(self):
         features = self.input_data.columns
-        fig = px.scatter_matrix(self.input_data, dimensions=features, color=self.labels)
+        fig = px.scatter_matrix(
+            self.input_data,
+            dimensions=features,
+            color=self.color_map,
+            hover_name=self.labels,
+        )
         fig.update_traces(diagonal_visible=True)
         return fig
 
@@ -54,7 +65,14 @@ class PlotMaster:
         tsne = TSNE(n_components=2, random_state=0, perplexity=5).fit_transform(
             self.input_data
         )
-        fig = px.scatter(tsne, x=0, y=1, color=self.labels, labels={"color": "states"})
+        fig = px.scatter(
+            tsne,
+            x=0,
+            y=1,
+            color=self.color_map,
+            hover_name=self.labels,
+            labels={"color": "states"},
+        )
         return fig
 
     def plot_tsne_3D(self):
@@ -62,7 +80,13 @@ class PlotMaster:
             self.input_data
         )
         fig = px.scatter_3d(
-            tsne, x=0, y=1, z=2, color=self.labels, labels={"color": "states"}
+            tsne,
+            x=0,
+            y=1,
+            z=2,
+            color=self.color_map,
+            hover_name=self.labels,
+            labels={"color": "states"},
         )
         return fig
 
@@ -70,7 +94,14 @@ class PlotMaster:
         umap = UMAP(n_components=2, init="random", random_state=0).fit_transform(
             self.input_data
         )
-        fig = px.scatter(umap, x=0, y=1, color=self.labels, labels={"color": "states"})
+        fig = px.scatter(
+            umap,
+            x=0,
+            y=1,
+            color=self.color_map,
+            hover_name=self.labels,
+            labels={"color": "states"},
+        )
         return fig
 
     def plot_umap_3D(self):
@@ -78,7 +109,13 @@ class PlotMaster:
             self.input_data
         )
         fig = px.scatter_3d(
-            umap, x=0, y=1, z=2, color=self.labels, labels={"color": "states"}
+            umap,
+            x=0,
+            y=1,
+            z=2,
+            color=self.color_map,
+            hover_name=self.labels,
+            labels={"color": "states"},
         )
         return fig
 
@@ -92,9 +129,10 @@ class PlotMaster:
             to_plot = self.input_data[desired_columns]
             fig = px.scatter(
                 to_plot,
-                x="Murder",
-                y="Assault",
-                color=self.labels,
+                x=to_plot.columns[0],
+                y=to_plot.columns[1],
+                color=self.color_map,
+                hover_name=self.labels,
                 labels={"color": "states"},
             )
             return fig
