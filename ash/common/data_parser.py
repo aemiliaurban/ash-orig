@@ -1,4 +1,27 @@
+import csv
 import math
+
+# def csv_data_reader(path: str):
+#     with open(path) as f:
+#         return f.read().splitlines()
+
+
+def csv_order_data_reader(path: str):
+    data = []
+    with open(path, newline="") as f:
+        for line in f.readlines():
+            if line != '"x"\n':
+                data.append(float(line) - 1)
+    return data
+
+
+def csv_merge_data_reader(path: str):
+    data = []
+    with open(path, newline="") as f:
+        for line in f.readlines():
+            if line != '"V1","V2"\n':
+                data.append([int(x) for x in line.split(",")])
+    return data
 
 
 class RDataParser:
