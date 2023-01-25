@@ -1,9 +1,33 @@
+import csv
 import math
+
+# def csv_data_reader(path: str):
+#     with open(path) as f:
+#         return f.read().splitlines()
+
+
+def csv_order_data_reader(path: str):
+    data = []
+    with open(path, newline="") as f:
+        for line in f.readlines():
+            if line != '"x"\n':
+                data.append(float(line) - 1)
+    return data
+
+
+def csv_merge_data_reader(path: str):
+    data = []
+    with open(path, newline="") as f:
+        for line in f.readlines():
+            if line != '"V1","V2"\n':
+                data.append([int(x) for x in line.split(",")])
+    return data
 
 
 class RDataParser:
     def __init__(self, input_data):
         self.merge_matrix = [map(float, x) for x in input_data["merge_matrix"]]
+        print(input_data["joining_height"])
         self.joining_height = [float(x) for x in input_data["joining_height"]]
         self.order = [float(x) for x in input_data["order"]]
         self.labels = input_data["labels"]

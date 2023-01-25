@@ -3,12 +3,12 @@ from unittest.mock import patch
 import matplotlib
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
+from plotly.graph_objs import graph_objs
 
 from ash.common.data_parser import RDataParser
 from ash.common.input_data import INPUT_DATA_DENDROGRAM, US_ARRESTS
 from ash.common.plot_master import PlotMaster
 from ash.common.plotly_modified_dendrogram import create_dendrogram_modified
-from plotly.graph_objs import graph_objs
 
 matplotlib.pyplot.switch_backend("agg")
 

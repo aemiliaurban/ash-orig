@@ -36,6 +36,7 @@ class PlotMaster:
 
     def plot_pca(self):
         pca = PCA(2).fit_transform(self.input_data)
+        print(pca)
         fig = px.scatter(pca, x=0, y=1, color=self.color_map, hover_name=self.labels)
         return fig
 
