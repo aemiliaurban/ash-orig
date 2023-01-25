@@ -2,7 +2,7 @@ import os
 
 import pandas as pd
 
-from .data_parser import csv_order_data_reader, csv_merge_data_reader
+from .data_parser import csv_merge_data_reader, csv_order_data_reader
 
 DATA_FOLDER = os.path.join(os.getcwd(), "ash", "common", "user_data")
 
@@ -227,11 +227,13 @@ MERGE_MATRIX_V1 = MERGE_MATRIX_RAW["V1"].values.tolist()
 MERGE_MATRIX_V2 = MERGE_MATRIX_RAW["V2"].values.tolist()
 MERGE_MATRIX = [list(x) for x in zip(MERGE_MATRIX_V1, MERGE_MATRIX_V2)]
 
-JOINING_HEIGHT = pd.read_csv(
-    os.path.join(DATA_FOLDER, "levine32-heights.csv")
-)["x"].values.tolist()
+JOINING_HEIGHT = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-heights.csv"))[
+    "x"
+].values.tolist()
 
-ORDER_RAW = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-order.csv"))["x"].values.tolist()
+ORDER_RAW = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-order.csv"))[
+    "x"
+].values.tolist()
 ORDER = [x - 1 for x in ORDER_RAW]
 
 INPUT_FLOW_DATA_DENDROGRAM = {

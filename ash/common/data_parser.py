@@ -27,7 +27,6 @@ def csv_merge_data_reader(path: str):
 class RDataParser:
     def __init__(self, input_data):
         self.merge_matrix = [map(float, x) for x in input_data["merge_matrix"]]
-        print(input_data["joining_height"])
         self.joining_height = [float(x) for x in input_data["joining_height"]]
         self.order = [float(x) for x in input_data["order"]]
         self.labels = input_data["labels"]
