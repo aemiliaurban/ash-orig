@@ -21,19 +21,19 @@ def plot_input_data_reduced(plot_input_data: list[str]):
         pca = plot_master.plot_pca()
         streamlit.plotly_chart(pca)
     if "PCA_3D" in plot_input_data:
-        pca = plot_master.plot_pca_3d()
+        pca = plot_master.plot_pca(dimensions=3)
         streamlit.plotly_chart(pca)
     if "tSNE" in plot_input_data:
         tsne = plot_master.plot_tsne()
         streamlit.plotly_chart(tsne)
     if "tSNE_3D" in plot_input_data:
-        tsne = plot_master.plot_tsne_3D()
+        tsne = plot_master.plot_tsne(dimensions=3)
         streamlit.plotly_chart(tsne)
     if "UMAP" in plot_input_data:
         umap = plot_master.plot_umap()
         streamlit.plotly_chart(umap)
     if "UMAP_3D" in plot_input_data:
-        umap = plot_master.plot_umap_3D()
+        umap = plot_master.plot_umap(dimensions=3)
         streamlit.plotly_chart(umap)
 
 

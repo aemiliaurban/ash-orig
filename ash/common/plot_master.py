@@ -43,35 +43,6 @@ class PlotMaster:
         df = df[desired_columns].T
         return {"z": df.values, "x": self.order_labels(), "y": df.index.tolist()}
 
-    def plot_pca(self):
-        pca = self.read_reduction("pca.txt", REDUCED_DIMENSIONS_FOLDER)
-        if pca:
-            fig = px.scatter(
-                pca, x=0, y=1, color=self.color_map, hover_name=self.labels, title="PCA"
-            )
-        else:
-            pca = PCA(2).fit_transform(self.input_data)
-            print(f"{pca=}")
-            self.save_reduction(pca, "pca.txt", REDUCED_DIMENSIONS_FOLDER)
-            fig = px.scatter(
-                pca, x=0, y=1, color=self.color_map, hover_name=self.labels, title="PCA"
-            )
-        return fig
-
-    def plot_pca_3d(self):
-        pca = self.read_reduction("pca_3D.txt", REDUCED_DIMENSIONS_FOLDER)
-        if pca:
-            fig = px.scatter_3d(
-            pca, x=0, y=1, z=2, color=self.color_map, hover_name=self.labels, title="PCA 3D"
-        )
-        else:
-            pca = PCA(3).fit_transform(self.input_data)
-            self.save_reduction(pca, "pca_3D.txt", REDUCED_DIMENSIONS_FOLDER)
-            fig = px.scatter_3d(
-            pca, x=0, y=1, z=2, color=self.color_map, hover_name=self.labels, title="PCA 3D"
-        )
-        return fig
-
     def plot_all_dimensions(self):
         features = self.input_data.columns
         fig = px.scatter_matrix(
@@ -83,35 +54,38 @@ class PlotMaster:
         fig.update_traces(diagonal_visible=True)
         return fig
 
-    def plot_tsne(self):
-        tsne = self.read_reduction("tsne.txt", REDUCED_DIMENSIONS_FOLDER)
-        if tsne:
+    def plot_pca(self, dimensions: int = 2):
+        filename = "pca.txt" if dimensions == 2 else "pca_3D.txt"
+        pca = self.read_reduction(filename, REDUCED_DIMENSIONS_FOLDER)
+        if not pca:
+            pca = PCA(dimensions).fit_transform(self.input_data)
+            self.save_reduction(pca, filename, REDUCED_DIMENSIONS_FOLDER)
+
+        if dimensions == 2:
             fig = px.scatter(
-                tsne,
-                x=0,
-                y=1,
-                color=self.color_map,
-                hover_name=self.labels,
-                title="TSNE",
+                pca, x=0, y=1, color=self.color_map, hover_name=self.labels, title="PCA"
             )
         else:
-            tsne = TSNE(n_components=2, random_state=0, perplexity=5).fit_transform(
-                self.input_data
-            )
-            self.save_reduction(tsne, "tsne.txt", REDUCED_DIMENSIONS_FOLDER)
-            fig = px.scatter(
-                tsne,
+            fig = px.scatter_3d(
+                pca,
                 x=0,
                 y=1,
+                z=2,
                 color=self.color_map,
                 hover_name=self.labels,
-                title="TSNE",
+                title="PCA_3D",
             )
         return fig
 
-    def plot_tsne_3D(self):
-        tsne = self.read_reduction("tsne_3D.txt", REDUCED_DIMENSIONS_FOLDER)
-        if tsne:
+    def plot_tsne(self, dimensions: int = 2):
+        filename = "tsne.txt" if dimensions == 2 else "tsne_3D.txt"
+        tsne = self.read_reduction(filename, REDUCED_DIMENSIONS_FOLDER)
+        if not tsne:
+            tsne = TSNE(
+                n_components=dimensions, random_state=0, perplexity=5
+            ).fit_transform(self.input_data)
+            self.save_reduction(tsne, filename, REDUCED_DIMENSIONS_FOLDER)
+        if dimensions == 2:
             fig = px.scatter(
                 tsne,
                 x=0,
@@ -121,23 +95,26 @@ class PlotMaster:
                 title="TSNE",
             )
         else:
-            tsne = TSNE(n_components=3, random_state=0, perplexity=5).fit_transform(
-                self.input_data
-            )
-            self.save_reduction(tsne, "tsne_3D.txt", REDUCED_DIMENSIONS_FOLDER)
-            fig = px.scatter(
+            fig = px.scatter_3d(
                 tsne,
                 x=0,
                 y=1,
+                z=2,
                 color=self.color_map,
                 hover_name=self.labels,
-                title="TSNE",
+                title="TSNE_3D",
             )
         return fig
 
-    def plot_umap(self):
-        umap = self.read_reduction("umap.txt", REDUCED_DIMENSIONS_FOLDER)
-        if umap:
+    def plot_umap(self, dimensions: int = 2):
+        filename = "umap.txt" if dimensions == 2 else "umap_3D.txt"
+        umap = self.read_reduction(filename, REDUCED_DIMENSIONS_FOLDER)
+        if not umap:
+            umap = UMAP(
+                n_components=dimensions, init="random", random_state=0
+            ).fit_transform(self.input_data)
+            self.save_reduction(umap, filename, REDUCED_DIMENSIONS_FOLDER)
+        if dimensions == 2:
             fig = px.scatter(
                 umap,
                 x=0,
@@ -147,43 +124,14 @@ class PlotMaster:
                 title="UMAP",
             )
         else:
-            umap = UMAP(n_components=2, init="random", random_state=0).fit_transform(
-                self.input_data
-            )
-            self.save_reduction(umap, "umap.txt", REDUCED_DIMENSIONS_FOLDER)
-            fig = px.scatter(
+            fig = px.scatter_3d(
                 umap,
                 x=0,
                 y=1,
+                z=2,
                 color=self.color_map,
                 hover_name=self.labels,
-                title="UMAP",
-            )
-        return fig
-
-    def plot_umap_3D(self):
-        umap = self.read_reduction("umap.txt", REDUCED_DIMENSIONS_FOLDER)
-        if umap:
-            fig = px.scatter(
-                umap,
-                x=0,
-                y=1,
-                color=self.color_map,
-                hover_name=self.labels,
-                title="UMAP",
-            )
-        else:
-            umap = UMAP(n_components=3, init="random", random_state=0).fit_transform(
-                self.input_data
-            )
-            self.save_reduction(umap, "umap.txt", REDUCED_DIMENSIONS_FOLDER)
-            fig = px.scatter(
-                umap,
-                x=0,
-                y=1,
-                color=self.color_map,
-                hover_name=self.labels,
-                title="UMAP",
+                title="UMAP_3D",
             )
         return fig
 
@@ -242,4 +190,3 @@ class PlotMaster:
         except:
             return None
         return data
-
