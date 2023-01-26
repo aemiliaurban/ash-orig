@@ -9,7 +9,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from umap import UMAP
 
-from .sample_input_data import DATA_FOLDER
+DATA_FOLDER = os.path.join(os.getcwd(), "common", "user_data")
 
 REDUCED_DIMENSIONS_FOLDER = "reduced_dimensions"
 
