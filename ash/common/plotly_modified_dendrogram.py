@@ -53,7 +53,7 @@ class _Dendrogram_Modified(object):
         color_threshold=None,
     ):
         self.orientation = "bottom"
-        self.labels = labels
+        self.labels = None
         self.xaxis = xaxis
         self.yaxis = yaxis
         self.data = []
