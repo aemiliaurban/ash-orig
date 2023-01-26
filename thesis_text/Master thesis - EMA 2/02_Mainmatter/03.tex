@@ -10,6 +10,13 @@ Hierarchical clustering is one of the possible approaches to classification prob
 
 In the agglomerative approach, two closest elements are conjoined into a cluster, which is then joined into a larger cluster with the closest element. In this iterative way, a singular final cluster is made and a hierarchical overview of the data is formed. In this way, an agglomerative hierarchical algorithm displays the similarity between clusters and only check distances between data points.
 
+
+"""
+In hierarchical clustering, the merging points of clusters are called "nodes" or "linkage points".
+Each merging point is represented by a node in the dendrogram, which is the graphical representation of the hierarchical clustering.
+A dendrogram is a tree-like diagram that shows the hierarchical structure of the clusters at different levels of granularity. The leaves of the dendrogram represent individual data points and the branches represent clusters of data points, which are formed by merging smaller clusters.
+The linkage point show the distance between the two clusters that are being merged, and the height of the linkage point in the dendrogram represents the distance or similarity between the merged clusters."""
+
 \section{Distance}
 \label{sec:distance}
 Distance can never be a negative number, and scales from 0 for objects that are not different at all, to larger values for more different objects. The default distance metric is usually Euclidean, although in flow cytometry context, the usage of Mahalanobis distance instead could be a better idea \cite{fivser2012detection}.

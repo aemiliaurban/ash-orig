@@ -10,7 +10,7 @@ In this thesis, several mostly Python frameworks for building both front-end app
 
 \section{R Shiny (ShinyDendro)}
 \label{sec:streamlit}
-R Shiny is the only non-Pythonic open-source package that is discussed in the thesis. It is used for building web applications. No knowledge of typically web development stack - HTML, CSS, JavaScript - is necessary. 
+R Shiny is the only non-Pythonic open-source package that is discussed in the thesis. It is used for building web applications aimed at data scientists, as the most use is focused toward data exploration, analysis, and visualization. The finished application be either be run locally or deployed to a server, making it accessible by users all over the world. No knowledge of typically web development stack - HTML, CSS, JavaScript - is necessary. The R side of things is responsible for the data processing and analysis, while the rest of the stack handles user interface and interactions. A variety of premade tools is available, such as buttons, sliders, or menus. Premade layouts are also available, speeding up the process to a nicely looking application.
 
 In 2022, PyShiny was announced, bringing Shiny to the Python ecosystem.
 
@@ -54,6 +54,26 @@ Dash is not suitable for building large scale web applications, and web applicat
 
 PROBABLY ADD SECTIONS DIVIDING GRAPHING SOLUTIONS AND FRONTEND
 
+\section{PyScript}
+\label{sec:pyscript}
+PyScript is a framework that promises connecting Python code to html, letting applications run in the browser without any JavaScript knowledge. JavaScript is not a programming language of choice for many scientists [SOURCE]. It requires little to no initial setup. The creation of PyScript was enabled by Pyodide, which is a CPython way to WebAssembly. 
+
+PyScript is added to one's application by adding a link to it's source at the head of the HTML file. This solution requires a working internet connection, however, the files can be downloaded and linked locally, making it possible to run offline. PyScript comes with a .js file and a .css file. 
+
+It is preferred using the Python code as a source, rather than inserting the code directly into the HTML PyScript tag to prevent potential formatting issues. 
+
+Some Python libraries are available and need to be specified under a py-env tag or install via micropip. 
+
+It is possible to interact with several HTML elements such as document, window, or console. Alternatively, it is possible to leverage Pyodide to create proxies between Python and JavaScript callbacks, or use prepared UI components such as buttons and text boxes. 
+
+One main difference between PyScript and other Python solutions such as Dash \ref{sec:dash} or Streamlit \ref{sec:streamlit} is that while the latter solutions require a server to run, PyScript operates on the client side. Unlike Dash and Streamlit, basic HTML knowledge is necessary. 
+
+It was announced in 2022, and as of 2023, it is in alpha stage of development. With that said, core functionality is still under development and may change in the nearby future. Additionaly, it lacks a lot of functionality one would need from such a solution, such as Plotly \ref{sec:plotly} not being supported. However, alternatives such as Bokeh are available. Even so, the graphs are not interactive. 
+
+Pyscript makes it more difficult to debug one's application. 
+
+PyScript was not chosen as a solution for this thesis as its loading times are incredibly slow [TIME IT, maybe Hello World?].
+
 \section{Altair}
 \label{sec:networkx}
 Altair is relatively constrained as a graphing solution. It was build on Vega-lite, which calls itself a visualization grammar, and is a declarative language for interactive visualizations. While Altair in its core uses JSON to define properties, the user of Altair Python library does not need to do such thing: Altair does the converting for the user based on the inputs. It uses Pandas, therefore data can be manipulated in a manner similar to Pandas. Apart from Pandas DataFrame, the user can choose to input data in other formats such as Data and related objects, json file, csv file, url pointing to either of previously mentioned files. Altair is also of declarative nature meaning that Altair chooses a lot of "how to do" for the user and the user can focus on the "what to do", with a high-level approach. As other Python libraries, it can be easily install via a pip command. 
@@ -72,7 +92,7 @@ One of the bigger disadvantages of Altair is the size constraint, and Altair doc
 
 \section{Networkx}
 \label{sec:networkx}
-Networkx was decided to be unfit for the task as while representing dendrograms in a form of a graph is possible, it is not the best solution.
+Networkx was decided to be unfit for the task as while representing dendrograms in a form of a graph is possible, it is not the best solution. --maybe its not possible?
 
 \section{Matplotlib}
 \label{sec:matplotlib}
@@ -86,6 +106,17 @@ Matplotlib integrates flawlessly with Numpy, sklearn, or pandas.
 
 Creating 3D visualizations is possible in Matplotlib. Matplotlib comes with an animation module, bringing life to the user's graphs. The data representations can be either static, interactive, or dynamic. In general, there are better options for representing time series than Matplotlib.
 
+
+\section{Bokeh}
+\label{sec:bokeh}
+Bokeh is also on a list of available open-source Python libraries that make data analysis easier. It cooperates with more web focused mediators such as Streamlit or PyScript. The API for creating plots and visualizations is designed to be simple and intuitive, and allows to be displayed in web browsers with use of JavaScript. The customizability is high, many details about the plots can be changed, including visual details such as color and line styles. The integration with Jupyter Notebook is supported, and Bokeh also gladly cooperates with Flask or Django. 
+
+Although the API is quite simple, the underlying JavaScript can be overpowering for developers and data scientists who lack experience with web development. 
+
+Apart from traditionally expected types of visualization such as line plots, scatter plots, or bar charts, it also comes with built-in tools that allow the user to interact with the plot. However, as Bokeh is a high-level tool, users might struggle to find the amount of customization they desire. Bokeh also does not go well with 3D visualizations. 
+
+Unlike Altair, Bokeh's strenght comes from the ability to handle large datasets. It also allows the user to link multiple plots together and other desirable options expected to be necessary in a data exploration tool. 
+
 \section{Plotly}
 \label{sec:plotly}
 Plotly is also an open-source Python package. Plotly is built on plotly.js, which is a Plotly JavaScript library, and also uses tools such as D3.js, HTML, and CSS. As such, it is appropriate to use with web in mind. Plotly also supports Jupyter Notebook integration. Plotly is also a high level declarative tool, meaning that it takes care of large portions of the visualization if the relationships between the data are specified clearly. While declarative tools save user time and code lines by making a lot of decisions for the user, it comes at an expense of less control over the plot and the details overall. 
@@ -93,10 +124,6 @@ Plotly is also an open-source Python package. Plotly is built on plotly.js, whic
 Plotly can be used for interactive graphing, it supports 3D charts, and many other expected types of plots (scatter, violin, box, and others). Plotly offers tools for interacting with the plots, such as the hover feature, which can be used to identify outliers. However, the sheer amount of tools Plotly comes with sharpened learning curve and decision paralysis. 
 
 Multipanel layouts are available, and while linking the panels together might not be as straightforward as in Altair, it is not overly difficult. 
-
-Plotly express
-
-# seaborn, bokeh
 
 
 

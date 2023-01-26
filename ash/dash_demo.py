@@ -6,9 +6,9 @@ from dash import Dash, Input, Output, dcc, html
 from plotly.graph_objs import graph_objs
 
 from ash.common.data_parser import RDataParser
-from ash.common.input_data import INPUT_DATA_DENDROGRAM, US_ARRESTS
 from ash.common.plot_master import PlotMaster
 from ash.common.plotly_modified_dendrogram import create_dendrogram_modified
+from ash.common.sample_input_data import INPUT_DATA_DENDROGRAM, US_ARRESTS
 
 matplotlib.pyplot.switch_backend("agg")
 

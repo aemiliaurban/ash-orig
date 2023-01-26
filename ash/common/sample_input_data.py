@@ -2,8 +2,6 @@ import os
 
 import pandas as pd
 
-from .data_parser import csv_merge_data_reader, csv_order_data_reader
-
 DATA_FOLDER = os.path.join(os.getcwd(), "ash", "common", "user_data")
 
 INPUT_DATA_DENDROGRAM = {
@@ -215,30 +213,6 @@ INPUT_DATA_DENDROGRAM = {
     ],
 }
 
-# us_arrests = pd.read_csv(os.path.join(DATA_FOLDER, "USArrests.csv"))
-# STATES = us_arrests["Unnamed: 0"]
-# US_ARRESTS = us_arrests.drop(["Unnamed: 0"], axis=1)
-
-FLOW_CYTOMETRY = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-som24x24.csv"))
-ROWS = [i for i in range(len(FLOW_CYTOMETRY.index))]
-
-MERGE_MATRIX_RAW = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-merge.csv"))
-MERGE_MATRIX_V1 = MERGE_MATRIX_RAW["V1"].values.tolist()
-MERGE_MATRIX_V2 = MERGE_MATRIX_RAW["V2"].values.tolist()
-MERGE_MATRIX = [list(x) for x in zip(MERGE_MATRIX_V1, MERGE_MATRIX_V2)]
-
-JOINING_HEIGHT = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-heights.csv"))[
-    "x"
-].values.tolist()
-
-ORDER_RAW = pd.read_csv(os.path.join(DATA_FOLDER, "levine32-order.csv"))[
-    "x"
-].values.tolist()
-ORDER = [x - 1 for x in ORDER_RAW]
-
-INPUT_FLOW_DATA_DENDROGRAM = {
-    "merge_matrix": MERGE_MATRIX,
-    "joining_height": JOINING_HEIGHT,
-    "order": ORDER,
-    "labels": ROWS,
-}
+us_arrests = pd.read_csv(os.path.join(DATA_FOLDER, "USArrests.csv"))
+STATES = us_arrests["Unnamed: 0"]
+US_ARRESTS = us_arrests.drop(["Unnamed: 0"], axis=1)
