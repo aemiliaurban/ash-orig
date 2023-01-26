@@ -47,7 +47,6 @@ desired_features = col1.multiselect(
 )
 
 
-@streamlit.cache(ttl=24 * 60 * 60)
 def compute_dendrogram_fig():
     with patch(
         "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
