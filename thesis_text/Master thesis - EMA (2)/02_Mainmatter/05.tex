@@ -2,9 +2,9 @@
 \label{chap:five}
 The following chapter discusses the process of creating an interactive visualization tool, choosing the right frameworks, and using them to create new solutions to explore flow cytometry data. The importance of skills in various fields such as data science, statistics, design, and software development is highlighted. Architecture of final solution is described.
 
-\section{Requirements for developing an visual analysis tool}
+\section{Requirements for developing a visual analysis tool}
 \label{sec:req}
-While each of the frameworks described in \ref{chap:four} has their own merit and their own pitfalls, the overall performance of a tool depends on user's requirements, expectations, and skills. Building data visualization tools is based on a variety of fields, such as data science, statistics, design, and software development. 
+While each of the frameworks described in \ref{chap:four} has its own merit and its own pitfalls, the overall performance of a tool depends on user's requirements, expectations, and skills. Building data visualization tools is based on a variety of fields, such as data science, statistics, design, and software development. 
 
 Skills from the area of design are understanding the use of color, typography, and layout, which can all help communicate insights about the data clearly to the end user. 
 
@@ -12,7 +12,7 @@ From software development side of things, one has to be able to use a language o
 
 \section{Selected Technologies and Architecture}
 \label{sec:selected_technologies}
-Two frameworks described in \ref{chap:four}, namely Streamlit \ref{sec:streamlit} and Dash \ref{sec:dash}, were chosen as frameworks in which the visualization tool would be developed. The rich communities of both frameworks provide a deep pool of knowledge, and promise support from the creators and future development. Both have proven a tool worthy of the task of visualizing and exploring a flow cytometry dataset. 
+Two frameworks described in \ref{chap:four}, namely Streamlit \ref{sec:streamlit} and Dash \ref{sec:dash}, were chosen as frameworks in which the visualization tool would be developed. The rich communities of both frameworks provide a deep pool of knowledge and promise support from the creators and future development. Both have proven to be tools worthy of the task of visualizing and exploring a flow cytometry dataset. 
 
 The tool consists of several layers as described below.
 \begin{figure}[h!]
@@ -148,12 +148,12 @@ Streamlit offers a couple of solutions to the issue. It is recommended to precom
 
 Another option is to leverage Streamlit's naive cache. The cash promises improved manipulation with large datasets and performing expensive operations. It can be implemented by using the @streamlit.cache decorator on expensive functions. When a function is called with @streamlit.cache decorator, Streamlit checks whether the input parameter has changed, whether any value of any external variable has changed, what is inside the body of the function, and the body of any function called inside the decorated function. Everything is cached the first time the program is run, making the first run more expensive than subsequential runs. 
 
+Apart from cache, Streamlit also offers a tool named experimental cache primitives. Experimental cache primitives aims to ameliorate caching, as @streamlit.cache has been deemed "hard to use and not fast" (according to Streamlit's official documentation). As a fix, Streamlit followed development with the addition of two more decorators: @streamlit.experimental\textunderscore memo and @streamlit.experimental\textunderscore singleton. The documentation promises increased performance over 10x for @streamlit.experimental\textunderscore memo when compared to @streamlit.cache. Unlike @streamlit.cache, it returns items by value, not reference, leveraging Python's pickle functionality. 
+
 \paragraph{Dash}
 \label{sec:dash3}
-A comparable solution was built in Dash, relying on the same PlotMaster background. The lack of out of box formatting was noticable, making the app less pleasant to work with. 
+Dash follows a different philosophy than Streamlit. While Streamlit reruns the whole application upon any change, Dash functions by using callbacks. A callback is a decorator which maps UI elements to inputs and outputs of individual functions. It makes the application snappy and reduces loading times noticeably. 
 
-Another challenge was to create a way to share information between each part of the application, since unlike Streamlit, Dash works in a series of callbacks as described in \ref{sec:dash}. Fortunately, Dash offers a data storage components, which enables the communication. 
+Breaking the application into several smaller units aids perfomance. Unfortunately, it makes sharing information between each of the units more difficult. Information sharing is necessary for the graphs are connected. Fortunately, Dash offers a simple solution in a form of a Dash component Store, making the issue easy to solve. 
 
-One of the issues Streamlit brings is that it reruns the whole code whenever anything is changed. It also recomputes all elements that were not subject to the change, making it desirable to implement intermittent data saving and loading to reduce any necessary computation. Streamlit's own caching solution is in development at time of writing this. 
-
-The author found Streamlit's interface easier to navigate by a small margin, and integrated formatting out the box makes the application look more well rounded compared to out of the box bareness of Dash, which expects user specified formatting, ideally in the form of a .css file.
+Dash also doesn't come with any formatting, so the application looks bare and unpolished out of the box.

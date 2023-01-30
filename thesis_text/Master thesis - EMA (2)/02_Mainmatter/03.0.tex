@@ -1,14 +1,20 @@
 \chapter{Clustering}
 \label{chap:clustering}
-Clustering is a method of finding structural patterns in given data and sorting the data points into groups or subsets. In general, data points in one cluster are more similar to each other than to data points in other clusters. Clustering can be done in either supervised, semisupervised, or unsupervised fashion. 
+Clustering is a method of finding structural patterns in given data and sorting the data points into groups or subsets. In general, data points in one cluster are more similar to each other than to data points in other clusters. Clustering can be done in either supervised, semisupervised, or unsupervised fashion. One has to keep in mind that the definition of a cluster is in the eye of the scientist.
 
 Cluster analysis is a collection of various algorithms and methods that can be used in said grouping process, with each being appropriate for different jobs. The basis of each model is different as well, using various measures such as distance \citep{murtagh2017algorithms, hsu2007hierarchical}. The basic overview can be split into connectivity models \citep{fischer2003clustering}, centroid models \citep{morissette2013k, sun2014parallel}, distribution models \citep{jimenez2019extensions, bocchieri2001subspace}, density models \citep{campello2020density}, and other. This thesis focuses mainly on hierarchical clustering, which falls under connectivity models and uses distance as its metric of choice. 
 
+However, as the definition of what a cluster is is vague, new clustering algorithms are developed, old clustering algorithms are revisited and refined \citep{estivill2002so}.
+
+Cluster analysis can be used in a variety of settings, be it image or text analysis, e-commerce, data mining \citep{agarwal2013data}, and biology. Clustering can stand on its own or be a part of a data analysis pipeline. 
+
 \section{Hierarchical clustering}
 \label{sec:hierarchicalclustering}
-Hierarchical clustering is one of the possible approaches to classification problems. It is a tool that gives an idea of the data structure, and allows for association between subclusters while also keeping a level of distinction. Hierarchical clustering can be done in two ways: bottom up, also known as agglomerative, in which the displayed distance is of two clusters, and top down, also known as divisive, in which the distance displayed is between individual observations. Only the agglomerative approach will be discussed in this thesis. 
+Hierarchical clustering, also known as connectivity-based clustering, is one of the possible approaches to classification problems. It is a tool that gives an idea of data structure, and allows for association between subclusters while also keeping a level of distinction. Hierarchical clustering imagines that two data points can be closer to each other than to other data points. Hierarchical clustering can be done in two ways: bottom up, also known as agglomerative, in which the displayed distance is of two clusters, and top down, also known as divisive, in which the distance displayed is between individual observations. Only the agglomerative approach will be discussed in this thesis. 
 
 In the agglomerative approach, two closest elements are conjoined into a cluster, which is then joined into a larger cluster with the closest element. In this iterative way, a singular final cluster is made and a hierarchical overview of the data is formed. In this way, an agglomerative hierarchical algorithm displays the similarity between clusters and only check distances between data points.
+
+Hierarchical clustering can be visually represented by dendrograms, as described in \ref{sec:dendrogram}.
 
 
 """
@@ -43,27 +49,3 @@ It follows this algorithm:
 
 4. Plug the above, which can also be written as 
 \[(test_point - sample_mean)/standard_deviation\]
-
-
-\section{Data Visualization}
-\label{sec:dataviz}
-As data visualization is crucial for human friendly work and allows for simpler interpretation of the results, various tools and approaches have been developed. Visualization is one of the core parts of data science. It allows not only for the data scientist to understand the data and the oucome of their work better, but also to share it with the shareholders or the public in a clear way.
-
-The cluster structure can be graphically represented in a dendrogram, which by its nature consists of n - 1 pairs of branches over n observations, each branch representing one split. The distance between sub-clusters is given by the height of the branches. 
-
-However, it is not enough to have the dendrogram generated. The user might also want to be able to interact with the results, zooming in and out of parts, choosing various colors for different clusters, or selecting only parts of the final dendrogram. Tools for dendrogram visualization and inspection have been made as described in \cite{sieger2017interactive}.
-
-Dendrograms are often paired with heat maps, another data visualization tool in which values are represented in a matrix of values, that are later translated into colors. Color can also be assigned to each cell population, distinguishing them by their markers \cite{ellyard2019non}. Advanced heatmap tools have also been implemented in R \citep{zhao2014advanced}. Patterns of large datasets can be displayed via heatmaps without the need to analyse the data first \citep{key2012tutorial}.
-
-
-
-
-
-
-
-
-
-
-
-
-
