@@ -45,6 +45,7 @@ app.layout = html.Div(
             marks=r.height_marks,
             id="color-threshold-slider",
         ),
+        dcc.Dropdown(["Colorblind palette on", "Colorblind palette off"], multi=False, id="colorblind-palette-dropdown"),
         dcc.Dropdown(list(r.dataset.columns), multi=True, id="dropdown-heatmap-plot"),
         dcc.Graph(id="dendrogram-graph", figure=go.Figure()),
         dcc.Graph(id="heatmap-graph", figure=go.Figure()),
@@ -74,14 +75,16 @@ app.layout = html.Div(
 @app.callback(
     Output("dendrogram_memory", "data"),
     Input("color-threshold-slider", "value"),
+    Input("colorblind-palette-dropdown", "value")
 )
-def create_dendrogram(value):
+def create_dendrogram(value, colorblind_palette_input):
+    colorblind_palette = True if colorblind_palette_input == "Colorblind palette on" else False
     with patch(
         "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
         new=create_dendrogram_modified,
     ) as create_dendrogram:
         custom_dendrogram = create_dendrogram(
-            r.merge_matrix, color_threshold=value, labels=r.labels
+            r.merge_matrix, color_threshold=value, labels=r.labels, colorblind_palette=colorblind_palette
         )
         to_return = {
             "leaves_color_map_translated": custom_dendrogram.leaves_color_map_translated,
@@ -112,9 +115,7 @@ def plot_heatmap(value, data):
     )
     if type(value) != list or len(value) < 2:
         fig_heatmap = go.Figure(
-            data=go.Heatmap(
-                plot_master.df_to_plotly(r.dataset, r.dataset.columns[0:2])
-            )
+            data=go.Heatmap(plot_master.df_to_plotly(r.dataset, r.dataset.columns[0:2]))
         )
     else:
         fig_heatmap = go.Figure(

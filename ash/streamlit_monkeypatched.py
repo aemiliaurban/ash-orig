@@ -45,6 +45,8 @@ color_threshold = col1.slider("Select color threshold.", 0, r.max_tree_height)
 desired_features = col1.multiselect(
     "What features would you like to plot in a heatmap.", list(r.dataset.columns)
 )
+colorblind_palette_choice = col1.selectbox("Use colorblind palette", ("Yes", "No"))
+colorblind_palette = True if colorblind_palette_choice == "Yes" else False
 
 
 def compute_dendrogram_fig():
@@ -53,7 +55,9 @@ def compute_dendrogram_fig():
         new=create_dendrogram_modified,
     ) as create_dendrogram:
         custom_dendrogram = create_dendrogram(
-            r.merge_matrix, color_threshold=color_threshold
+            r.merge_matrix,
+            color_threshold=color_threshold,
+            colorblind_palette=colorblind_palette,
         )
         custom_dendrogram_color_map = custom_dendrogram.leaves_color_map_translated
     return custom_dendrogram, custom_dendrogram_color_map
