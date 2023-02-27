@@ -9,7 +9,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from umap import UMAP
 
-#DATA_FOLDER = os.path.join(os.getcwd(), "common", "user_data")
+# DATA_FOLDER = os.path.join(os.getcwd(), "common", "user_data")
 DATA_FOLDER = os.path.join(os.getcwd(), "ash", "ash", "common", "user_data")
 
 REDUCED_DIMENSIONS_FOLDER = "reduced_dimensions"
@@ -63,7 +63,8 @@ class PlotMaster:
         fig = px.scatter_matrix(
             self.input_data,
             dimensions=features,
-            color=self.color_map,
+            color=list(self.color_map.keys()),
+            color_discrete_map=self.color_map,
             hover_name=self.labels,
         )
         fig.update_traces(diagonal_visible=True)
@@ -79,7 +80,13 @@ class PlotMaster:
 
         if dimensions == 2:
             fig = px.scatter(
-                pca, x=0, y=1, color=self.color_map, hover_name=self.labels, title="PCA"
+                pca,
+                x=0,
+                y=1,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
+                hover_name=self.labels,
+                title="PCA",
             )
         else:
             fig = px.scatter_3d(
@@ -87,7 +94,8 @@ class PlotMaster:
                 x=0,
                 y=1,
                 z=2,
-                color=self.color_map,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
                 hover_name=self.labels,
                 title="PCA_3D",
             )
@@ -107,7 +115,8 @@ class PlotMaster:
                 tsne,
                 x=0,
                 y=1,
-                color=self.color_map,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
                 hover_name=self.labels,
                 title="TSNE",
             )
@@ -117,7 +126,8 @@ class PlotMaster:
                 x=0,
                 y=1,
                 z=2,
-                color=self.color_map,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
                 hover_name=self.labels,
                 title="TSNE_3D",
             )
@@ -137,7 +147,8 @@ class PlotMaster:
                 umap,
                 x=0,
                 y=1,
-                color=self.color_map,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
                 hover_name=self.labels,
                 title="UMAP",
             )
@@ -147,7 +158,8 @@ class PlotMaster:
                 x=0,
                 y=1,
                 z=2,
-                color=self.color_map,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
                 hover_name=self.labels,
                 title="UMAP_3D",
             )
@@ -165,7 +177,8 @@ class PlotMaster:
                 to_plot,
                 x=to_plot.columns[0],
                 y=to_plot.columns[1],
-                color=self.color_map,
+                color=list(self.color_map.keys()),
+                color_discrete_map=self.color_map,
                 hover_name=self.labels,
                 labels={"color": "states"},
             )
@@ -177,7 +190,8 @@ class PlotMaster:
             to_plot,
             x=to_plot.columns[0],
             y=to_plot.columns[1],
-            color=self.color_map,
+            color=list(self.color_map.keys()),
+            color_discrete_map=self.color_map,
             hover_name=self.labels,
             labels={"color": "states"},
         )

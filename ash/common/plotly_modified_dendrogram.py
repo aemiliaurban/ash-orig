@@ -243,8 +243,8 @@ class _Dendrogram_Modified(object):
             }
         )
 
-        #self.set_axis_layout(self.xaxis)
-        #self.set_axis_layout(self.yaxis)
+        # self.set_axis_layout(self.xaxis)
+        # self.set_axis_layout(self.yaxis)
 
         return self.layout
 

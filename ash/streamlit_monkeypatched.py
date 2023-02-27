@@ -65,6 +65,7 @@ def compute_dendrogram_fig():
 
 custom_dendrogram, custom_dendrogram_color_map = compute_dendrogram_fig()
 
+
 plot_master = PlotMaster(
     r.dataset, custom_dendrogram.labels, r.order, custom_dendrogram_color_map
 )
