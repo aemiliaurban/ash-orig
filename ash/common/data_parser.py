@@ -4,7 +4,7 @@ import os
 import pandas as pd
 
 DATA_FOLDER = os.path.join(os.getcwd(), "common", "user_data")
-DATA_FOLDER = os.path.join(os.getcwd(), "ash", "ash", "common", "user_data")
+#DATA_FOLDER = os.path.join(os.getcwd(), "ash", "ash", "common", "user_data")
 
 
 def csv_order_data_reader(path: str):

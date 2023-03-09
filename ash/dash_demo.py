@@ -52,6 +52,7 @@ app.layout = html.Div(
         ),
         dcc.Dropdown(list(r.dataset.columns), multi=True, id="dropdown-heatmap-plot"),
         dcc.Graph(id="dendrogram-graph", figure=go.Figure()),
+        html.Div(id='no-of-clusters-output'),
         dcc.Graph(id="heatmap-graph", figure=go.Figure()),
         dcc.Dropdown(
             list(r.dataset.columns), multi=True, id="dropdown-selected-features-plot"
@@ -89,6 +90,7 @@ def create_dendrogram(value, colorblind_palette_input):
         "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
         new=create_dendrogram_modified,
     ) as create_dendrogram:
+        print(f"{r.merge_matrix}")
         custom_dendrogram = create_dendrogram(
             r.merge_matrix,
             color_threshold=value,
@@ -97,6 +99,7 @@ def create_dendrogram(value, colorblind_palette_input):
         )
         to_return = {
             "leaves_color_map_translated": custom_dendrogram.leaves_color_map_translated,
+            "clusters": custom_dendrogram.clusters,
             "labels": custom_dendrogram.labels,
             "data": custom_dendrogram.data,
             "layout": custom_dendrogram.layout,
@@ -111,6 +114,14 @@ def create_dendrogram(value, colorblind_palette_input):
 def plot_dendrogram(data):
     fig = graph_objs.Figure(data=data["data"], layout=data["layout"])
     return fig
+
+
+@app.callback(
+    Output("no-of-clusters-output", "children"),
+    Input("dendrogram_memory", "data")
+)
+def get_number_of_clusters(data):
+    return f"Number of clusters: {data['clusters']}"
 
 
 @app.callback(

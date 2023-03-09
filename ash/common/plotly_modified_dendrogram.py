@@ -4,58 +4,13 @@ from collections import OrderedDict
 
 from plotly import optional_imports
 
+from ash.common.color_mappings import RGB_COLORSCALE, NORMAL_COLOR_PALETTE, COLORBLIND_PALETTE, NEW_OLD_COLORMAP
+
 # Optional imports, may be None for users that only use our core functionality.
 np = optional_imports.get_module("numpy")
 scp = optional_imports.get_module("scipy")
 sch = optional_imports.get_module("scipy.cluster.hierarchy")
 scs = optional_imports.get_module("scipy.spatial")
-
-NORMAL_COLOR_PALETTE = {
-    "r": "red",
-    "g": "green",
-    "b": "blue",
-    "c": "cyan",
-    "m": "magenta",
-    "y": "yellow",
-    "k": "black",
-    # TODO: 'w' doesn't seem to be in the default color palette in scipy/cluster/hierarchy.py
-    "w": "white",
-}
-
-COLORBLIND_PALETTE = [
-    ("r", "#e41a1c"),
-    ("g", "#4daf4a"),
-    ("b", "#377eb8"),
-    ("c", "#984ea3"),
-    ("m", "#ff7f00"),
-    ("y", "#ffff33"),
-    ("k", "#a65628"),
-    ("w", "#f0f0f0"),
-]
-
-RGB_COLORSCALE = [
-    "rgb(0,116,217)",  # blue
-    "rgb(35,205,205)",  # cyan
-    "rgb(61,153,112)",  # green
-    "rgb(40,35,35)",  # black
-    "rgb(133,20,75)",  # magenta
-    "rgb(255,65,54)",  # red
-    "rgb(255,255,255)",  # white
-    "rgb(255,220,0)",  # yellow
-]
-
-NEW_OLD_COLORMAP = [
-    ("C0", "b"),
-    ("C1", "g"),
-    ("C2", "r"),
-    ("C3", "c"),
-    ("C4", "m"),
-    ("C5", "y"),
-    ("C6", "k"),
-    ("C7", "g"),
-    ("C8", "r"),
-    ("C9", "c"),
-]
 
 
 def create_dendrogram_modified(
@@ -129,11 +84,13 @@ class _Dendrogram_Modified(object):
             ordered_labels,
             leaves,
             leaves_color_map_translated,
+            clusters
         ) = self.get_dendrogram_traces(X, colorscale, hovertext, color_threshold)
 
         self.labels = ordered_labels
         self.leaves = leaves
         self.leaves_color_map_translated = leaves_color_map_translated
+        self.clusters = clusters
         yvals_flat = yvals.flatten()
         xvals_flat = xvals.flatten()
 
@@ -254,8 +211,6 @@ class _Dendrogram_Modified(object):
 
         :param (ndarray) X: Matrix of observations as array of arrays
         :param (list) colorscale: Color scale for dendrogram tree clusters
-        :param (function) distfun: Function to compute the pairwise distance
-                                   from the observations
         :param (function) linkagefun: Function to compute the linkage matrix
                                       from the pairwise distances
         :param (list) hovertext: List of hovertext for constituent traces of dendrogram
@@ -271,6 +226,7 @@ class _Dendrogram_Modified(object):
 
         """
         P = sch.dendrogram(Z, color_threshold=color_threshold, no_labels=True)
+        clusters = len(set(sch.fcluster(Z, color_threshold, criterion="distance")))
 
         icoord = scp.array(P["icoord"])
         dcoord = scp.array(P["dcoord"])
@@ -332,4 +288,5 @@ class _Dendrogram_Modified(object):
             ordered_labels,
             P["leaves"],
             leaves_color_list_translated,
+            clusters
         )
