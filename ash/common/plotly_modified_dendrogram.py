@@ -4,7 +4,7 @@ from collections import OrderedDict
 
 from plotly import optional_imports
 
-from ash.common.color_mappings import RGB_COLORSCALE, NORMAL_COLOR_PALETTE, COLORBLIND_PALETTE, NEW_OLD_COLORMAP
+from common.color_mappings import RGB_COLORSCALE, NORMAL_COLOR_PALETTE, COLORBLIND_PALETTE, NEW_OLD_COLORMAP
 
 # Optional imports, may be None for users that only use our core functionality.
 np = optional_imports.get_module("numpy")
