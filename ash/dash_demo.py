@@ -1,6 +1,8 @@
 from unittest.mock import patch
 
 import matplotlib
+import matplotlib.pyplot as plt
+from cycler import cycler
 import plotly.graph_objects as go
 from dash import Dash, Input, Output, dcc, html
 from plotly.graph_objs import graph_objs
@@ -10,10 +12,17 @@ from ash.common.plot_master import PlotMaster
 from ash.common.plotly_modified_dendrogram import create_dendrogram_modified
 
 matplotlib.pyplot.switch_backend("agg")
+matplotlib.rcParams['axes.prop_cycle'] = matplotlib.cycler(color=["r", "k", "c"])
 
 r = RDataParser()
 r.convert_merge_matrix()
 r.add_joining_height()
+
+default_cycler = (cycler(color=['r', 'g', 'b', 'y']) +
+                  cycler(linestyle=['-', '--', ':', '-.']))
+
+plt.rc('lines', linewidth=4)
+plt.rc('axes', prop_cycle=default_cycler)
 
 
 def plot_input_data_reduced(plot_input_data: str, plot_master: PlotMaster):
@@ -42,7 +51,7 @@ app.layout = html.Div(
             min=0,
             max=r.max_tree_height,
             value=10,
-            marks=r.height_marks,
+            marks=None,
             id="color-threshold-slider",
         ),
         dcc.Dropdown(
@@ -50,7 +59,7 @@ app.layout = html.Div(
             multi=False,
             id="colorblind-palette-dropdown",
         ),
-        dcc.Dropdown(list(r.dataset.columns), multi=True, id="dropdown-heatmap-plot"),
+        dcc.Dropdown(list(r.dataset.columns), multi=True, id="dropdown-heatmap-plot", value="All"),
         dcc.Graph(id="dendrogram-graph", figure=go.Figure()),
         html.Div(id='no-of-clusters-output'),
         dcc.Graph(id="heatmap-graph", figure=go.Figure()),
@@ -90,7 +99,6 @@ def create_dendrogram(value, colorblind_palette_input):
         "plotly.figure_factory._dendrogram._Dendrogram.get_dendrogram_traces",
         new=create_dendrogram_modified,
     ) as create_dendrogram:
-        print(f"{r.merge_matrix}")
         custom_dendrogram = create_dendrogram(
             r.merge_matrix,
             color_threshold=value,
@@ -133,7 +141,11 @@ def plot_heatmap(value, data):
     plot_master = PlotMaster(
         r.dataset, data["labels"], r.order, data["leaves_color_map_translated"]
     )
-    if type(value) != list or len(value) < 2:
+    if value == "All":
+        fig_heatmap = go.Figure(
+            data=go.Heatmap(plot_master.df_to_plotly(r.dataset, r.dataset.columns))
+        )
+    elif type(value) != list or len(value) < 2:
         fig_heatmap = go.Figure(
             data=go.Heatmap(plot_master.df_to_plotly(r.dataset, r.dataset.columns[0:2]))
         )

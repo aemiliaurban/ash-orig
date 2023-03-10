@@ -231,11 +231,10 @@ class _Dendrogram_Modified(object):
         icoord = scp.array(P["icoord"])
         dcoord = scp.array(P["dcoord"])
         ordered_labels = scp.array(P["ivl"])
-        color_list = scp.array(P["color_list"])
+        color_list = list(P["color_list"])
         colors = self.get_color_dict(colorscale)
 
         trace_list = []
-
         for i in range(len(icoord)):
             # xs and ys are arrays of 4 points that make up the '∩' shapes
             # of the dendrogram tree

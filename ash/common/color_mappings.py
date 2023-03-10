@@ -7,7 +7,10 @@ NORMAL_COLOR_PALETTE = {
     "y": "yellow",
     "k": "black",
     # TODO: 'w' doesn't seem to be in the default color palette in scipy/cluster/hierarchy.py
-    "w": "white",
+    "w": "gray",
+    "o": "orange",
+    "dg": "rgb(0, 128, 0)",
+#    "p": "rgb(153,076)"
 }
 
 COLORBLIND_PALETTE = [
@@ -23,12 +26,14 @@ COLORBLIND_PALETTE = [
 
 RGB_COLORSCALE = [
     "rgb(0,116,217)",  # blue
+    "rgb(0, 128, 0)", #dark green
     "rgb(35,205,205)",  # cyan
-    "rgb(61,153,112)",  # green
+    "rgb(102,255,102)",  # green
     "rgb(40,35,35)",  # black
     "rgb(133,20,75)",  # magenta
     "rgb(255,65,54)",  # red
-    "rgb(255,255,255)",  # white
+    "rgb(255,128,0)", #orange
+    "rgb(160,160,160)",  # gray
     "rgb(255,220,0)",  # yellow
 ]
 
@@ -40,9 +45,10 @@ NEW_OLD_COLORMAP = [
     ("C4", "m"),
     ("C5", "y"),
     ("C6", "k"),
-    ("C7", "g"),
-    ("C8", "r"),
-    ("C9", "c"),
+    ("C7", "o"),
+    ("C8", "dg"),
+    ("C9", "w"),
+#    ("C10", "p")
 ]
 
 RGB_50_SHADES = [
